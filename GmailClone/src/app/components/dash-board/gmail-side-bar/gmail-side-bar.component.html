@@ -1,0 +1,28 @@
+<div
+  class="bg-light border-end d-flex flex-column p-3"
+  style="width: 240px; height: calc(100vh - 60px)"
+>
+  <button class="btn btn-danger w-100 mb-3" (click)="openComposeMail()">
+    Compose
+  </button>
+
+  <ul class="nav flex-column">
+    <ng-container *ngFor="let menu of menus; let i = index">
+      <li class="nav-item">
+        <a
+          style="cursor: pointer"
+          class="nav-link text-dark"
+          [ngClass]="{ active: activeMenu == menu.name }"
+          (click)="menuClick(menu.name)"
+        >
+          {{ menu.name }}
+        </a>
+      </li>
+    </ng-container>
+  </ul>
+
+  <!-- Log Out button at the bottom -->
+  <button class="btn btn-danger w-100 mt-auto" (click)="logOut()">
+    <i class="bi bi-box-arrow-right"></i> Log Out
+  </button>
+</div>

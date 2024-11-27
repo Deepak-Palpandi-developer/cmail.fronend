@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="card mx-auto mt-5" style="max-width: 400px">
+    <div class="card-body p-4">
+      <div class="text-center mb-3">
+        <img
+          src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+          alt="Google Logo"
+          style="width: 50px"
+        />
+      </div>
+      <h4 class="text-center">Sign in</h4>
+      <p class="text-center text-muted">to continue to Clone-Gmail</p>
+      <div class="mb-1">
+        <label for="email" class="form-label text-muted">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          [(ngModel)]="userEmail"
+          value="john.doe@example.com"
+          placeholder="Enter your email"
+        />
+      </div>
+      <div class="mb-1" *ngIf="isEmailValid">
+        <label for="email" class="form-label text-muted">Password</label>
+        <input
+          [(ngModel)]="password"
+          [type]="passwordType"
+          class="form-control"
+          id="Password"
+          value="deepakpdp@1234"
+          placeholder="Enter your password"
+          minlength="5"
+        />
+      </div>
+      <div class="form-text mb-1 text-danger" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+      <div class="form-text mt-2 mb-2">
+        <a
+          style="cursor: pointer"
+          class="text-decoration-none"
+          routerLink="/forget-password"
+          >Forgot password?</a
+        >
+        <span style="float: inline-end" *ngIf="isEmailValid"
+          ><a
+            class="text-decoration-none text-end"
+            style="cursor: pointer"
+            (click)="viewPassword()"
+            ><i class="bi bi-eye" *ngIf="isVisibilePassword"></i
+            ><i class="bi bi-eye-slash" *ngIf="!isVisibilePassword"></i></a
+        ></span>
+      </div>
+      <div class="mb-4">
+        <small class="text-muted"
+          >Not your computer? Use Guest mode to sign in privately.
+          <a href="#" class="text-decoration-none">Learn more</a></small
+        >
+      </div>
+      <div class="d-grid gap-2">
+        <a
+          style="cursor: pointer"
+          class="text-decoration-none mb-2"
+          routerLink="/sign-up"
+          >Create account</a
+        >
+        <button
+          type="submit"
+          class="btn btn-primary"
+          *ngIf="!isEmailValid"
+          (click)="validateEmail()"
+        >
+          Next
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          *ngIf="isEmailValid"
+          [disabled]="isSaveProgress"
+          (click)="login()"
+        >
+          sign In
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

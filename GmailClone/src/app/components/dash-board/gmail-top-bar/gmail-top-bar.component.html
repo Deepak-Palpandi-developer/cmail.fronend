@@ -1,0 +1,34 @@
+<div
+  class="d-flex align-items-center justify-content-between bg-light border-bottom p-2"
+  style="height: 60px"
+>
+  <div class="d-flex align-items-center">
+    <img
+      [attr.src]="logoImage"
+      alt="Google Logo"
+      style="width: 100px"
+      class="me-2"
+      alt="Logo"
+    />
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Search"
+      style="width: 300px"
+    />
+  </div>
+  <div class="d-flex align-items-center">
+    <span class="me-2" style="font-size: 14px"
+      ><span style="float: right">{{ user?.userName }}</span> <br /><span
+        class="me-2"
+        ><span style="float: right">{{ user?.userEmail }}</span></span
+      ></span
+    >
+    <img
+      [attr.src]="user?.profileImage"
+      class="rounded-circle"
+      style="width: 30px"
+      alt="Profile"
+    />
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<ng-template #content let-modal>
+  <div class="modal-header" style="border: none">
+    <ng-container *ngIf="data.type === 'alert'">
+      <h3 class="modal-title com-blue">Alert</h3>
+    </ng-container>
+    <ng-container *ngIf="data.type === 'confirm'"> Confirm </ng-container>
+  </div>
+
+  <div class="modal-body">
+    <!--<p>{{ data.message}}</p>-->
+    <p [innerHTML]="data.message"></p>
+  </div>
+  <div class="modal-footer" style="border: none">
+    <ng-container *ngIf="data.type === 'alert'">
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        (click)="onClickEvent(data.confirmText)"
+      >
+        {{ data.confirmText }}
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="data.type === 'confirm'">
+      <button
+        type="button"
+        class="btn btn-outline-danger m-r-5"
+        (click)="onClickEvent(data.confirmText)"
+      >
+        {{ data.confirmText }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="onClickEvent(data.cancelText)"
+      >
+        {{ data.cancelText }}
+      </button>
+    </ng-container>
+  </div>
+</ng-template>

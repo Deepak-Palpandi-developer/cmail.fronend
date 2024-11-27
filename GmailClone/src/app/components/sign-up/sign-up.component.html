@@ -1,0 +1,276 @@
+<div class="container">
+  <div class="card mx-auto mt-5" style="max-width: 600px">
+    <div class="card-body p-4">
+      <div class="text-center mb-3">
+        <img
+          src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+          alt="Google Logo"
+          style="width: 100px"
+        />
+      </div>
+      <h4 class="text-center">Create your Google Account</h4>
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <ng-container *ngIf="!isNext">
+          <div class="row g-3 mb-1">
+            <div class="col-md-6">
+              <label for="firstName" class="form-label">First name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                placeholder="Enter your first name"
+                formControlName="firstName"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label for="lastName" class="form-label">Last name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                formControlName="lastName"
+                placeholder="Enter your last name"
+              />
+            </div>
+          </div>
+
+          <!-- New Date of Birth Field -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="dateOfBirth" class="form-label">Date of Birth</label>
+              <input
+                type="date"
+                class="form-control"
+                id="dateOfBirth"
+                formControlName="dateOfBirth"
+                placeholder="Enter your date of birth"
+              />
+              <div
+                *ngIf="
+                  dateOfBirth?.invalid &&
+                  (dateOfBirth?.touched || dateOfBirth?.dirty)
+                "
+              >
+                <small
+                  *ngIf="dateOfBirth?.errors?.['required']"
+                  class="text-danger"
+                  >Date of Birth is required</small
+                >
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="gender" class="form-label">Gender</label>
+              <select class="form-control" id="gender" formControlName="gender">
+                <option value="" disabled selected>Select your gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <div
+                *ngIf="gender?.invalid && (gender?.touched || gender?.dirty)"
+              >
+                <small *ngIf="gender?.errors?.['required']" class="text-danger"
+                  >Gender is required</small
+                >
+              </div>
+            </div>
+          </div>
+
+          <div
+            *ngIf="
+              firstName?.invalid && (firstName?.touched || firstName?.dirty)
+            "
+          >
+            <small *ngIf="firstName?.errors?.['required']" class="text-danger"
+              >First name is required</small
+            >
+            <small *ngIf="firstName?.errors?.['minlength']" class="text-danger"
+              >First name must be at least 5 characters</small
+            >
+          </div>
+          <div class="mb-1">
+            <label for="username" class="form-label">Create your Email</label>
+            <input
+              type="text"
+              class="form-control"
+              id="username"
+              formControlName="username"
+              placeholder="youremail@gmail.com"
+            />
+            <div
+              *ngIf="
+                username?.invalid && (username?.touched || username?.dirty)
+              "
+            >
+              <small *ngIf="username?.errors?.['required']" class="text-danger"
+                >Username is required</small
+              >
+              <small *ngIf="username?.errors?.['email']" class="text-danger"
+                >Username must be a valid email</small
+              >
+            </div>
+            <div
+              class="form-text text-success fs-6"
+              *ngIf="usernameSuggestions != undefined"
+            >
+              {{ commonService.joinWithDelimiter(usernameSuggestions, ", ") }}
+            </div>
+            <div class="form-text">You can use letters, numbers & periods</div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                formControlName="password"
+                placeholder="Enter your password"
+              />
+              <div
+                *ngIf="
+                  password?.invalid && (password?.touched || password?.dirty)
+                "
+              >
+                <small
+                  *ngIf="password?.errors?.['required']"
+                  class="text-danger"
+                  >Password is required</small
+                >
+                <small
+                  *ngIf="password?.errors?.['minlength']"
+                  class="text-danger"
+                  >Password must be at least 8 characters</small
+                >
+                <small *ngIf="password?.errors?.['pattern']" class="text-danger"
+                  >Password must contain at least one letter and one
+                  number</small
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="confirmPassword" class="form-label">Confirm</label>
+              <input
+                type="password"
+                class="form-control"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                placeholder="Enter your password again"
+              />
+              <div
+                *ngIf="
+                  confirmPassword?.invalid &&
+                  (confirmPassword?.touched || confirmPassword?.dirty)
+                "
+              >
+                <small
+                  *ngIf="confirmPassword?.errors?.['required']"
+                  class="text-danger"
+                  >Confirm password is required</small
+                >
+                <small
+                  *ngIf="confirmPassword?.errors?.['mismatch']"
+                  class="text-danger"
+                  >Passwords do not match</small
+                >
+              </div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <small class="text-muted"
+              >Use 8 or more characters with a mix of letters, numbers &
+              symbols</small
+            >
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="isNext">
+          <div class="mt-4">
+            <div class="mb-3">
+              <label for="mobileNumber" class="form-label">Mobile Number</label>
+              <input
+                type="number"
+                class="form-control"
+                id="mobileNumber"
+                formControlName="mobileNumber"
+                placeholder="Enter your mobile number"
+                maxlength="10"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="verificationCode" class="form-label"
+                >Verification Code</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="verificationCode"
+                formControlName="otp"
+                placeholder="Enter verification code"
+              />
+            </div>
+            <div class="text-center mt-3 mb-4">
+              <small class="text-muted"
+                >Didn't receive the code?
+                <a
+                  style="cursor: pointer"
+                  class="text-decoration-none"
+                  (click)="sendOtp()"
+                  >{{ otp!.value != "" ? "Resend" : "Send OTP" }}</a
+                ></small
+              >
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="d-grid gap-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="next()"
+            *ngIf="!isNext"
+          >
+            Next
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="verifyOtp()"
+            *ngIf="isNext && !isVerify"
+          >
+            Verify
+          </button>
+          <button type="submit" class="btn btn-primary" *ngIf="isVerify">
+            Sign Up
+          </button>
+        </div>
+        <div class="mt-2">
+          <a
+            style="cursor: pointer"
+            (click)="validatePreviousTab()"
+            class="text-decoration-none d-inline-flex align-items-center mt-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-arrow-left"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M15 8a.5.5 0 0 1-.5.5H3.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L3.707 7.5H14.5A.5.5 0 0 1 15 8z"
+              />
+            </svg>
+            <span class="ms-1">Back to Login Page</span>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ng-template customTemplate></ng-template>

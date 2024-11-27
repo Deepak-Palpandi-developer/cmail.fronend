@@ -1,0 +1,95 @@
+<div
+  class="position-fixed bottom-0 end-0 m-3 shadow-lg border rounded bg-white"
+  style="width: 500px; max-width: 100%; z-index: 1050"
+>
+  <!-- Header -->
+  <div
+    class="d-flex justify-content-between align-items-center p-2 border-bottom bg-light"
+  >
+    <h6 class="m-0">New Message</h6>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="closeCompose()"
+    ></button>
+  </div>
+
+  <!-- Body -->
+  <div class="p-3">
+    <!-- Recipients Field -->
+    <div class="mb-3">
+      <label for="recipient" class="form-label fw-bold">To</label>
+      <div
+        class="form-control d-flex flex-wrap align-items-center"
+        id="recipient"
+        style="height: auto; min-height: 38px"
+      >
+        <span class="badge bg-secondary me-1 mb-1"
+          >example1gmail.com
+          <button
+            type="button"
+            class="btn-close btn-close-white btn-sm ms-2"
+            aria-label="Remove"
+          ></button
+        ></span>
+        <span class="badge bg-secondary me-1 mb-1"
+          >example2gmail.com
+          <button
+            type="button"
+            class="btn-close btn-close-white btn-sm ms-2"
+            aria-label="Remove"
+          ></button
+        ></span>
+        <input
+          type="email"
+          class="border-0 flex-grow-1"
+          placeholder="Add recipients"
+          style="outline: none"
+        />
+      </div>
+    </div>
+
+    <!-- Subject Field -->
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control border-0 border-bottom"
+        placeholder="Subject"
+      />
+    </div>
+
+    <!-- Message Body -->
+    <div class="mb-3">
+      <textarea
+        class="form-control border-0"
+        rows="10"
+        placeholder="Write your message..."
+        style="resize: none"
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div
+    class="d-flex justify-content-between align-items-center p-2 border-top bg-light"
+  >
+    <div>
+      <button type="button" class="btn btn-primary btn-sm">
+        <i class="bi bi-send-fill"></i>
+      </button>
+    </div>
+    <div>
+      <button
+        type="button"
+        class="btn btn-danger btn-sm me-2"
+        (click)="closeCompose()"
+      >
+        <i class="bi bi-trash-fill"></i>
+      </button>
+      <button type="button" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-sliders"></i>
+      </button>
+    </div>
+  </div>
+</div>

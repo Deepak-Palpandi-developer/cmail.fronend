@@ -1,0 +1,35 @@
+<!-- Top Bar -->
+<app-gmail-top-bar
+  [user]="userDetails"
+  [logoImage]="logoImage"
+></app-gmail-top-bar>
+
+<!-- Main Container -->
+<div class="d-flex flex-grow-1">
+  <!-- Sidebar -->
+  <app-gmail-side-bar
+    [activeMenu]="defaultActiveMenu"
+    (menuClickEvent)="setActiveMenu($event)"
+    (composeMail)="openComposeMail()"
+  ></app-gmail-side-bar>
+
+  <!-- Main Content -->
+  <div
+    class="flex-grow-1 d-flex flex-column"
+    style="overflow-y: auto; height: calc(100vh - 60px)"
+  >
+    <!-- Toolbar -->
+    <app-gmail-actions></app-gmail-actions>
+
+    <!-- Email List -->
+    <app-gmail-display-list
+      [menuName]="defaultActiveMenu"
+    ></app-gmail-display-list>
+  </div>
+</div>
+
+<!-- Compose Box -->
+<app-gmail-compose
+  *ngIf="isComposeMail"
+  (closeComposeMail)="closeComposeMail()"
+></app-gmail-compose>
