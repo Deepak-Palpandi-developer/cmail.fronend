@@ -12,8 +12,8 @@ export class HttpCommonService<T> {
   ) {}
 
   postData<T>(url: string, apiRoute: string, data: T): Observable<any> {
-    var request: any;
-    var headers: any;
+    let request: any;
+    let headers: any;
     if (environment.enable_encryption) {
       const encryptedData = this.hmacService.encryptPayload(data);
       headers = this.hmacService.getHeaders(encryptedData?.cipherText);

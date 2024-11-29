@@ -11,6 +11,7 @@
     [activeMenu]="defaultActiveMenu"
     (menuClickEvent)="setActiveMenu($event)"
     (composeMail)="openComposeMail()"
+    [menus]="menusList"
   ></app-gmail-side-bar>
 
   <!-- Main Content -->
@@ -24,6 +25,7 @@
     <!-- Email List -->
     <app-gmail-display-list
       [menuName]="defaultActiveMenu"
+      [emails]="emails"
     ></app-gmail-display-list>
   </div>
 </div>

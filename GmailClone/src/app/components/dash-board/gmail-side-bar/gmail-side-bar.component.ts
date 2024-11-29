@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DROPDOWN_VALUES } from '../../../constants-data/dropdown-values';
 import { AuthService } from '../../../services/auth.service';
+import { Folders } from '../../../models/Folders';
 
 @Component({
   selector: 'app-gmail-side-bar',
@@ -8,12 +9,11 @@ import { AuthService } from '../../../services/auth.service';
   styles: ``,
 })
 export class GmailSideBarComponent {
+  @Input() menus!: Folders[];
   @Input() activeMenu: string = '';
 
   @Output() menuClickEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() composeMail: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  menus = DROPDOWN_VALUES.menu;
 
   constructor(private readonly authService: AuthService) {}
 

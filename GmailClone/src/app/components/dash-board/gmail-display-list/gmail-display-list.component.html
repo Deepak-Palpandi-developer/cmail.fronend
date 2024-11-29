@@ -1,12 +1,27 @@
-<div class="p-3">
-  <div
-    class="d-flex align-items-center justify-content-between border-bottom py-2"
-  >
-    <div class="d-flex align-items-center">
-      <input type="checkbox" class="form-check-input me-2" />
-      <strong>{{ menuName }}</strong> - Invitation to meetup
+<ng-container *ngIf="emails != undefined && emails.length != 0; else noemail">
+  <ng-container *ngFor="let email of emails; let i = index">
+    <div class="p-3">
+      <div
+        class="d-flex align-items-center justify-content-between border-bottom py-2"
+      >
+        <div class="d-flex align-items-center">
+          <input type="checkbox" class="form-check-input me-2" />
+          <strong>{{ email.senderEmail }}</strong> - {{ email.subject }}
+        </div>
+        <span>7:29 PM</span>
+      </div>
     </div>
-    <span>7:29 PM</span>
+  </ng-container>
+</ng-container>
+
+<ng-template #noemail>
+  <div class="p-3">
+    <div
+      class="d-flex align-items-center justify-content-between border-bottom py-2"
+    >
+      <div class="d-flex align-items-center">
+        <strong>{{ menuName }} is empty</strong>
+      </div>
+    </div>
   </div>
-  <!-- Add more emails here -->
-</div>
+</ng-template>

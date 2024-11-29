@@ -7,7 +7,12 @@
   </button>
 
   <ul class="nav flex-column">
-    <ng-container *ngFor="let menu of menus; let i = index">
+    <ng-container
+      *ngFor="
+        let menu of menus | displayOrder : 'displayOrder' : true;
+        let i = index
+      "
+    >
       <li class="nav-item">
         <a
           style="cursor: pointer"

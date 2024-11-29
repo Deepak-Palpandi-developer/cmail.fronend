@@ -6,6 +6,13 @@ import { selectUsers } from '../../../state-management/selectors/user.selectors'
 import { Observable } from 'rxjs';
 import { CommonService } from '../../../shared/common.service';
 import { SINGLE_VALUES } from '../../../constants-data/single-values';
+import { environment } from '../../../../environments/environment';
+import { CONNECTION_PATH_NAMES } from '../../../constants-data/api-path-names';
+import { Folders } from '../../../models/Folders';
+import { Email } from '../../../models/email';
+import { addSenderMails } from '../../../state-management/actions/email.actions';
+import { StorePushService } from '../../../shared/store.push.service';
+import { StoreGetService } from '../../../shared/store.get.service';
 
 @Component({
   selector: 'app-dash-board',
@@ -17,21 +24,23 @@ export class DashBoardComponent {
   jwtDecode!: JwtDecode;
   userDetails: User | null = null;
   isComposeMail = false;
-
+  menusList!: Folders[];
+  emails!: Email[];
   userDetails$!: Observable<User | null>;
 
   constructor(
     private readonly httpService: HttpCommonService<any>,
-    private readonly storeService: Store,
-    private readonly commonService: CommonService
+    private readonly commonService: CommonService,
+    private readonly setorePushService: StorePushService,
+    private readonly storeGetService: StoreGetService
   ) {}
 
   ngOnInit() {
-    this.getUserDetails();
+    this.initialLoadDatas();
   }
 
   getUserDetails() {
-    this.storeService.pipe(select(selectUsers)).subscribe((data) => {
+    this.storeGetService.getUserDetails().subscribe((data) => {
       if (data) {
         const lastLoginDisplay: any =
           this.commonService.convertUtcToLocalTime(data?.lastLogin ?? '') || '';
@@ -46,6 +55,13 @@ export class DashBoardComponent {
 
   setActiveMenu(menu: any) {
     this.defaultActiveMenu = menu;
+    if (menu == 'Sent') {
+      this.storeGetService.getSenderMais().subscribe((response) => {
+        if (response != null && response.length > 0) {
+          this.emails = this.emails;
+        }
+      });
+    }
   }
 
   openComposeMail() {
@@ -54,5 +70,38 @@ export class DashBoardComponent {
 
   closeComposeMail() {
     this.isComposeMail = false;
+  }
+
+  initialLoadDatas() {
+    this.getUserDetails();
+    this.getFolderDetails();
+    this.getSenderMalis();
+    this.setActiveMenu(this.defaultActiveMenu);
+  }
+
+  getFolderDetails() {
+    this.httpService
+      .postData(environment.mail_box_api, CONNECTION_PATH_NAMES.folderApi, '')
+      .subscribe((data: Folders[]) => {
+        if (data != null && data.length > 0) {
+          this.menusList = data;
+        }
+      });
+  }
+
+  getSenderMalis() {
+    this.httpService
+      .postData(
+        environment.mail_box_api,
+        CONNECTION_PATH_NAMES.senderMaillsApi,
+        {
+          email: this.userDetails?.userEmail,
+        }
+      )
+      .subscribe((response) => {
+        if (response.isSuccess) {
+          this.setorePushService.setSenderMail(response?.data);
+        }
+      });
   }
 }

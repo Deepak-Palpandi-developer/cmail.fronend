@@ -8,6 +8,7 @@ import * as jwt_decode from 'jwt-decode';
 import { JwtDecode } from '../models/UserModel';
 import { Store } from '@ngrx/store';
 import { addUsers } from '../state-management/actions/user.actions';
+import { StorePushService } from '../shared/store.push.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class AuthService {
     private readonly http: HttpCommonService<any>,
     private readonly router: Router,
     private readonly cookieService: CookieService,
-    private readonly storeService: Store
+    private readonly setorePushService: StorePushService
   ) {}
 
   login(url: string, email: string, password: string): Observable<boolean> {
@@ -72,7 +73,7 @@ export class AuthService {
 
   setUserDetailsInState() {
     const details = this.getJwrUserDetails();
-    this.storeService.dispatch(addUsers(details.user));
+    this.setorePushService.setUserDetails(details.user);
   }
 
   getJwrUserDetails(): JwtDecode {

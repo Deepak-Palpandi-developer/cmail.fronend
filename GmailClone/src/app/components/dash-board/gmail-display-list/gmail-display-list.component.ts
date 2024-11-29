@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Email } from '../../../models/email';
 
 @Component({
   selector: 'app-gmail-display-list',
@@ -7,4 +8,9 @@ import { Component, Input } from '@angular/core';
 })
 export class GmailDisplayListComponent {
   @Input() menuName: string = '';
+  @Input() emails: Email[] = [];
+
+  ngOnInit() {
+    console.log(this.emails);
+  }
 }
