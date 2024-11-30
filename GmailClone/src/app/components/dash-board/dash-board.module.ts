@@ -11,6 +11,7 @@ import { GmailDisplayListComponent } from './gmail-display-list/gmail-display-li
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GmailComposeComponent } from './gmail-compose/gmail-compose.component';
 import { DisplayOrderPipe } from '../../pipes/display-order.pipe';
+import { GmailViewComponent } from './gmail-view/gmail-view.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { DisplayOrderPipe } from '../../pipes/display-order.pipe';
     GmailDisplayListComponent,
     GmailComposeComponent,
     DisplayOrderPipe,
+    GmailViewComponent,
   ],
   imports: [
     CommonModule,

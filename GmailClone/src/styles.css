@@ -311,7 +311,7 @@
   border-color: #bd2130;
 }
 
-.btn-danger{
+.btn-danger {
   color: #fff;
   background-color: #dc3545;
   border-color: #dc3545;
@@ -539,4 +539,8 @@ button.toast-close-button {
     padding: 15px 15px 15px 50px;
     width: 25em;
   }
+}
+
+.preserve-format {
+  white-space: pre-wrap; /* This will preserve line breaks and white spaces */
 }

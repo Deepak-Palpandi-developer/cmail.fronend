@@ -1,0 +1,23 @@
+<div class="" *ngIf="email != undefined && email != null">
+  <div class="p-3">
+    <div class="card-header">
+      <h5 class="card-title">Subject: {{ email.subject }}</h5>
+      <p class="card-subtitle text-muted">To: {{ email.recipientEmail }}</p>
+      <p class="card-subtitle text-muted">
+        Date:
+        {{ commonService.convertUtcToLocalTime(email.sentDate.toString()) }}
+      </p>
+    </div>
+    <div class="card-body preserve-format mt-3">
+      {{ email.body }}
+    </div>
+    <div class="card-footer text-right">
+      <!-- <button class="btn btn-primary">Reply</button>
+        <button class="btn btn-secondary">Forward</button>
+        <button class="btn btn-danger">Delete</button> -->
+      <button class="btn btn-primary" (click)="backToListCall()">
+        <i class="bi bi-arrow-left-circle"></i>
+      </button>
+    </div>
+  </div>
+</div>
