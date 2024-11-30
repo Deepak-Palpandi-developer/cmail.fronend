@@ -4,19 +4,23 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'displayOrder',
 })
 export class DisplayOrderPipe implements PipeTransform {
-  transform(array: any[], key: string, isAscending: boolean = true): any[] {
-    if (!Array.isArray(array) || !key) {
-      return array; // Return the array as-is if not valid
+  transform(array: any[], field: string, order: 'asc' | 'desc' = 'asc'): any[] {
+    if (!Array.isArray(array) || !field) {
+      return array;
     }
 
-    return array.sort((a, b) => {
-      const valA = a[key];
-      const valB = b[key];
+    const sortedArray = array
+      .filter((item) => item && item[field] != null)
+      .sort((a, b) => {
+        if (a[field] < b[field]) {
+          return order === 'asc' ? -1 : 1;
+        } else if (a[field] > b[field]) {
+          return order === 'asc' ? 1 : -1;
+        } else {
+          return 0;
+        }
+      });
 
-      if (valA == null || valB == null) return 0; // Handle null/undefined
-
-      const comparison = valA > valB ? 1 : valA < valB ? -1 : 0;
-      return isAscending ? comparison : -comparison;
-    });
+    return sortedArray;
   }
 }

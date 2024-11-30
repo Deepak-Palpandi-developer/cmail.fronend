@@ -20,7 +20,7 @@ import { ConfirmAlertComponent } from './aleart-components/confirm-alert/confirm
 import { CustomTemplateDirective } from './aleart-components/custom-template.directive';
 import { DashBoardModule } from './components/dash-board/dash-board.module';
 import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
-import { StoreModules } from './state-management/store.module';
+import { StateModule } from './states/state.module';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,7 @@ import { StoreModules } from './state-management/store.module';
     }),
     NgbModule,
     DashBoardModule,
-    StoreModules,
+    StateModule,
   ],
   providers: [
     HttpCommonService,

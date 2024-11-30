@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DROPDOWN_VALUES } from '../../../constants-data/dropdown-values';
 import { AuthService } from '../../../services/auth.service';
-import { Folders } from '../../../models/Folders';
+import { Folders } from '../../../models/common.model';
 
 @Component({
   selector: 'app-gmail-side-bar',

@@ -1,38 +1,32 @@
 import { Component } from '@angular/core';
-import { HttpCommonService } from '../../../services/http.service';
-import { JwtDecode, User } from '../../../models/UserModel';
-import { select, Store } from '@ngrx/store';
-import { selectUsers } from '../../../state-management/selectors/user.selectors';
-import { Observable } from 'rxjs';
+import { User } from '../../../models/UserModel';
 import { CommonService } from '../../../shared/common.service';
-import { SINGLE_VALUES } from '../../../constants-data/single-values';
-import { environment } from '../../../../environments/environment';
-import { CONNECTION_PATH_NAMES } from '../../../constants-data/api-path-names';
-import { Folders } from '../../../models/Folders';
 import { Email } from '../../../models/email';
-import { addSenderMails } from '../../../state-management/actions/email.actions';
-import { StorePushService } from '../../../shared/store.push.service';
-import { StoreGetService } from '../../../shared/store.get.service';
+import { _default_values } from '../../../shared/constant-data';
+import { Store } from '@ngrx/store';
+import { selectAuthUserDetails } from '../../../states/auth/auth.selectors';
+import { Folders } from '../../../models/common.model';
+import { loadFolders } from '../../../states/common/common.actions';
+import { selectAllFolders } from '../../../states/common/common.selectors';
+import { loadMail } from '../../../states/mails/mail.actions';
+import { selectMailByTag } from '../../../states/mails/mail.selectors';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-dash-board',
   templateUrl: './dash-board.component.html',
 })
 export class DashBoardComponent {
-  logoImage = SINGLE_VALUES.logImage;
-  defaultActiveMenu = SINGLE_VALUES.defaultActiveMenu;
-  jwtDecode!: JwtDecode;
+  logoImage = _default_values._log_image;
+  defaultActiveMenu = _default_values._default_active_menu;
   userDetails: User | null = null;
   isComposeMail = false;
   menusList!: Folders[];
   emails!: Email[];
-  userDetails$!: Observable<User | null>;
 
   constructor(
-    private readonly httpService: HttpCommonService<any>,
     private readonly commonService: CommonService,
-    private readonly setorePushService: StorePushService,
-    private readonly storeGetService: StoreGetService
+    private readonly store: Store
   ) {}
 
   ngOnInit() {
@@ -40,28 +34,60 @@ export class DashBoardComponent {
   }
 
   getUserDetails() {
-    this.storeGetService.getUserDetails().subscribe((data) => {
-      if (data) {
-        const lastLoginDisplay: any =
-          this.commonService.convertUtcToLocalTime(data?.lastLogin ?? '') || '';
-        this.userDetails = {
-          ...data,
-          lastLoginDate: lastLoginDisplay,
-          profileImage: SINGLE_VALUES.userDefaultImage,
-        };
-      }
+    this.store.select(selectAuthUserDetails).subscribe((data) => {
+      this.userDetails = {
+        ...data,
+        profileImage: _default_values._user_default_image,
+      };
     });
   }
 
   setActiveMenu(menu: any) {
+    let email = this.userDetails?.userEmail ?? '';
     this.defaultActiveMenu = menu;
-    if (menu == 'Sent') {
-      this.storeGetService.getSenderMais().subscribe((response) => {
-        if (response != null && response.length > 0) {
-          this.emails = this.emails;
+    this.getMails(menu, email);
+  }
+
+  getMails(tag: string, email: string) {
+    this.emails = [];
+    const tagMapping: {
+      [key: string]: 'sender' | 'inbox' | 'trash' | 'archive' | 'draft';
+    } = {
+      sent: 'sender',
+      inbox: 'inbox',
+      trash: 'trash',
+      archive: 'archive',
+      draft: 'draft',
+    };
+
+    const tagKey = tagMapping[tag.toLowerCase()];
+    if (!tagKey) {
+      console.error('Invalid tag:', tag);
+      return;
+    }
+
+    this.store
+      .select(selectMailByTag(tagKey))
+      .pipe(take(1))
+      .subscribe((emails) => {
+        if (!emails || emails.length === 0) {
+          this.store.dispatch(loadMail({ email, tag: tagKey }));
+
+          this.store
+            .select(selectMailByTag(tagKey))
+            .pipe(
+              filter(
+                (updatedEmails) => updatedEmails && updatedEmails.length > 0
+              ),
+              take(1)
+            )
+            .subscribe((updatedEmails) => {
+              this.emails = updatedEmails;
+            });
+        } else {
+          this.emails = emails;
         }
       });
-    }
   }
 
   openComposeMail() {
@@ -75,33 +101,17 @@ export class DashBoardComponent {
   initialLoadDatas() {
     this.getUserDetails();
     this.getFolderDetails();
-    this.getSenderMalis();
+    // this.getSenderMalis();
     this.setActiveMenu(this.defaultActiveMenu);
   }
 
   getFolderDetails() {
-    this.httpService
-      .postData(environment.mail_box_api, CONNECTION_PATH_NAMES.folderApi, '')
-      .subscribe((data: Folders[]) => {
-        if (data != null && data.length > 0) {
-          this.menusList = data;
-        }
-      });
-  }
-
-  getSenderMalis() {
-    this.httpService
-      .postData(
-        environment.mail_box_api,
-        CONNECTION_PATH_NAMES.senderMaillsApi,
-        {
-          email: this.userDetails?.userEmail,
-        }
-      )
-      .subscribe((response) => {
-        if (response.isSuccess) {
-          this.setorePushService.setSenderMail(response?.data);
-        }
-      });
+    this.store.select(selectAllFolders).subscribe((data) => {
+      if (data.length > 0) {
+        this.menusList = data;
+      } else {
+        this.store.dispatch(loadFolders());
+      }
+    });
   }
 }

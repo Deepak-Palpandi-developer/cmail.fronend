@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Email } from '../../../models/email';
+import { CommonService } from '../../../shared/common.service';
 
 @Component({
   selector: 'app-gmail-display-list',
@@ -10,7 +11,5 @@ export class GmailDisplayListComponent {
   @Input() menuName: string = '';
   @Input() emails: Email[] = [];
 
-  ngOnInit() {
-    console.log(this.emails);
-  }
+  constructor(public readonly commonService: CommonService) {}
 }

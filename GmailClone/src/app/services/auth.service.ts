@@ -3,12 +3,13 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpCommonService } from './http.service';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { catchError, map, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as jwt_decode from 'jwt-decode';
-import { JwtDecode } from '../models/UserModel';
+import { JwtDecode, LoginResponse } from '../models/UserModel';
+import { AuthState } from '../states/auth/auth.reducer';
 import { Store } from '@ngrx/store';
-import { addUsers } from '../state-management/actions/user.actions';
-import { StorePushService } from '../shared/store.push.service';
+import { token } from '../states/auth/auth.actions';
+import { _connections } from '../shared/constant-data';
 
 @Injectable({
   providedIn: 'root',
@@ -19,31 +20,27 @@ export class AuthService {
     private readonly http: HttpCommonService<any>,
     private readonly router: Router,
     private readonly cookieService: CookieService,
-    private readonly setorePushService: StorePushService
+    private readonly store: Store<AuthState>
   ) {}
 
-  login(url: string, email: string, password: string): Observable<boolean> {
-    return this.http.postData(url, '/user/log-in', { email, password }).pipe(
-      map((data: any) => {
-        if (data?.isSuccess) {
-          this.cookieService.set('AuthToken', data?.data);
-          return true;
-        } else {
-          return false;
-        }
-      }),
-      catchError(() => of(false))
-    );
+  login(
+    url: string,
+    email: string,
+    password: string
+  ): Observable<LoginResponse> {
+    return this.http.postData(url, _connections._log_in, { email, password });
   }
 
   isAuthenticated(): boolean {
-    const token = this.cookieService.get('AuthToken');
-    if (!this.jwtHelper.isTokenExpired(token)) {
-      this.setUserDetailsInState();
-    } else {
-      this.cookieService.delete('AuthToken');
+    const tokens = this.cookieService.get('AuthToken');
+    if (tokens != null && tokens != undefined && tokens != '') {
+      const decodedToken = this.decodeToken(tokens);
+      const isTokenExpire = this.isTokenExpired(tokens);
+      this.store.dispatch(
+        token({ token: tokens, userDetails: decodedToken, isTokenExpire })
+      );
     }
-    return !!token && !this.jwtHelper.isTokenExpired(token);
+    return !!tokens && !this.jwtHelper.isTokenExpired(tokens);
   }
 
   logout(): void {
@@ -61,27 +58,12 @@ export class AuthService {
     }
   }
 
-  isTokenExpired(): boolean {
-    const token = this.cookieService.get('AuthToken');
+  isTokenExpired(token: string): boolean {
     const decoded = this.decodeToken(token);
     if (!decoded || !decoded.exp) {
       return true; // Invalid token
     }
     const currentTime = Math.floor(new Date().getTime() / 1000);
     return decoded.exp < currentTime;
-  }
-
-  setUserDetailsInState() {
-    const details = this.getJwrUserDetails();
-    this.setorePushService.setUserDetails(details.user);
-  }
-
-  getJwrUserDetails(): JwtDecode {
-    const token = this.cookieService.get('AuthToken');
-    const userDetails = {
-      user: this.decodeToken(token),
-      isExpires: this.isTokenExpired(),
-    };
-    return userDetails;
   }
 }

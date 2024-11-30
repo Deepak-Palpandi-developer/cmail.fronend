@@ -1,6 +1,5 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { HttpCommonService } from '../../services/http.service';
-import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,6 +11,11 @@ import {
   confirmDialog,
   CustomTemplateComponent,
 } from '../../models/confirmDialog';
+import { Store } from '@ngrx/store';
+import { SignUpState } from '../../states/signup/signup.reducer';
+import { sendOtp, signupUser } from '../../states/signup/signup.actions';
+import { SignUp } from '../../models/UserModel';
+import { selectOtp } from '../../states/signup/signup.selectors';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,7 +25,6 @@ import {
 export class SignUpComponent {
   usernameSuggestions: string[] = [];
   signupForm!: FormGroup;
-  generatedOtp: string = '';
 
   @ViewChild(CustomTemplateDirective, { static: true })
   customTemplate!: CustomTemplateDirective;
@@ -30,12 +33,12 @@ export class SignUpComponent {
   @ViewChild('content') confirmationModal!: TemplateRef<any>;
 
   constructor(
-    private readonly httpService: HttpCommonService<any>,
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly formBuilder: FormBuilder,
     public commonService: CommonService,
-    private readonly toastr: ToastrService
+    private readonly toastr: ToastrService,
+    private readonly store: Store<SignUpState>
   ) {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dash-board']);
@@ -156,21 +159,12 @@ export class SignUpComponent {
   }
 
   sendOtp() {
-    debugger;
     const mobileControl = this.signupForm.get('mobileNumber');
 
     if (mobileControl) {
       const mobileNumber = mobileControl.value;
-
-      // Basic mobile number validation - adjust the conditions to meet your requirements
       if (this.validateMobilePhoneNumber(mobileNumber)) {
-        this.generatedOtp = Math.floor(1000 + Math.random() * 9000).toString(); // 4-digit OTP
-
-        this.toastr.success(`Your OTP is: ${this.generatedOtp}`, 'OTP Sent');
-
-        console.log(`Dummy OTP sent to ${mobileNumber}: ${this.generatedOtp}`);
-
-        this.signupForm.get('otp')?.setValue(this.generatedOtp);
+        this.store.dispatch(sendOtp({ mobileNumber }));
       } else {
         this.toastr.error('Please enter a valid mobile number', 'Warning');
       }
@@ -180,14 +174,16 @@ export class SignUpComponent {
   }
 
   verifyOtp() {
-    if (this.otp!.value === this.generatedOtp) {
-      this.signupForm.get('isverified')?.setValue(true);
-      this.toastr.success('OTP Verified Successfully', 'Success');
-      this.isVerify = true;
-    } else {
-      this.toastr.error('Invalid OTP. Please try again', 'Error');
-      this.isVerify = false;
-    }
+    this.store.select(selectOtp).subscribe((otp) => {
+      if (this.otp!.value === otp) {
+        this.signupForm.get('isverified')?.setValue(true);
+        this.toastr.success('OTP Verified Successfully', 'Success');
+        this.isVerify = true;
+      } else {
+        this.toastr.error('Invalid OTP. Please try again', 'Error');
+        this.isVerify = false;
+      }
+    });
   }
 
   isNext: boolean = false;
@@ -203,40 +199,30 @@ export class SignUpComponent {
   isVerify: boolean = false;
 
   onSubmit() {
-    debugger
-    if (this.signupForm.invalid) {
-      this.signupForm.markAllAsTouched();
-      console.log('Form is invalid');
-    } else {
+    if (this.signupForm.valid) {
       const formValue = this.signupForm.value;
       const [year, month, day] = formValue.dateOfBirth.split('-');
-      var request = {
-        phone: formValue.mobileNumber.toString(),
-        prefixPhone: '+91',
-        email: formValue.username,
-        password: formValue.password,
+      const request: SignUp = {
         firstName: formValue.firstName,
         lastName: formValue.lastName,
+        username: formValue.username,
+        password: formValue.password,
+        confirmPassword: formValue.confirmPassword,
+        mobileNumber: formValue.mobileNumber,
+        otp: formValue.otp,
+        dateOfBirth: formValue.dateOfBirth,
+        isverified: formValue.isverified,
+        gender: formValue.gender,
+        bithYear: year,
         bithDay: day,
         bithMonth: month,
-        bithYear: year,
-        gender: formValue.gender,
-        isVerified: formValue.isverified,
       };
-
-      this.httpService
-        .postData(environment.user_auth_api, '/user/create-user', request)
-        .subscribe((data) => {
-          if (data?.isSuccess) {
-            console.log(data);
-            this.toastr.success('User created successfully', 'Success');
-            this.router.navigate(['/sign-in']);
-          } else {
-            this.toastr.error(data?.message, 'Error');
-          }
-        });
+      this.store.dispatch(signupUser({ user: request }));
+    } else {
+      this.signupForm.markAllAsTouched();
     }
   }
+
   validatePreviousTab() {
     if (!this.isNext) {
       if (this.signupForm.pristine) {

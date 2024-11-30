@@ -1,6 +1,7 @@
 <div
   class="position-fixed bottom-0 end-0 m-3 shadow-lg border rounded bg-white"
   style="width: 500px; max-width: 100%; z-index: 1050"
+  [formGroup]="composeForm"
 >
   <!-- Header -->
   <div
@@ -17,37 +18,57 @@
 
   <!-- Body -->
   <div class="p-3">
-    <!-- Recipients Field -->
-    <div class="mb-3">
-      <label for="recipient" class="form-label fw-bold">To</label>
-      <div
-        class="form-control d-flex flex-wrap align-items-center"
-        id="recipient"
-        style="height: auto; min-height: 38px"
-      >
-        <span class="badge bg-secondary me-1 mb-1"
-          >example1gmail.com
-          <button
-            type="button"
-            class="btn-close btn-close-white btn-sm ms-2"
-            aria-label="Remove"
-          ></button
-        ></span>
-        <span class="badge bg-secondary me-1 mb-1"
-          >example2gmail.com
-          <button
-            type="button"
-            class="btn-close btn-close-white btn-sm ms-2"
-            aria-label="Remove"
-          ></button
-        ></span>
+    <!-- Recipients Field with Cc/Bcc Buttons -->
+    <div class="mb-3 d-flex align-items-center position-relative">
+      <div class="flex-grow-1">
         <input
           type="email"
-          class="border-0 flex-grow-1"
-          placeholder="Add recipients"
+          class="form-control border-0 border-bottom"
+          placeholder="To"
           style="outline: none"
+          formControlName="recipientEmail"
+          (focus)="showCcBcc = true"
+          (blur)="hideCcBcc()"
         />
       </div>
+      <div class="ms-3" *ngIf="showCcBcc" (mousedown)="$event.preventDefault()">
+        <button
+          type="button"
+          class="btn btn-link p-0 text-decoration-none"
+          (click)="toggleCcField()"
+        >
+          Cc
+        </button>
+        <button
+          type="button"
+          class="btn btn-link p-0 text-decoration-none ms-2"
+          (click)="toggleBccField()"
+        >
+          Bcc
+        </button>
+      </div>
+    </div>
+
+    <!-- Cc Field -->
+    <div class="mb-3" *ngIf="showCcField">
+      <input
+        type="email"
+        class="form-control border-0 border-bottom"
+        placeholder="Cc"
+        style="outline: none"
+        formControlName="cc"
+      />
+    </div>
+
+    <!-- Bcc Field -->
+    <div class="mb-3" *ngIf="showBccField">
+      <input
+        type="email"
+        class="form-control border-0 border-bottom"
+        placeholder="Bcc"
+        style="outline: none"
+        formControlName="bcc"
+      />
     </div>
 
     <!-- Subject Field -->
@@ -56,6 +77,7 @@
         type="text"
         class="form-control border-0 border-bottom"
         placeholder="Subject"
+        formControlName="subject"
       />
     </div>
 
@@ -66,6 +88,7 @@
         rows="10"
         placeholder="Write your message..."
         style="resize: none"
+        formControlName="body"
       ></textarea>
     </div>
   </div>
@@ -74,9 +97,20 @@
   <div
     class="d-flex justify-content-between align-items-center p-2 border-top bg-light"
   >
-    <div>
-      <button type="button" class="btn btn-primary btn-sm">
+    <div class="d-flex align-items-center">
+      <button
+        type="button"
+        class="btn btn-primary btn-sm me-2"
+        (click)="onSubmit()"
+      >
         <i class="bi bi-send-fill"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        (click)="attachFile()"
+      >
+        <i class="bi bi-paperclip"></i> Attach
       </button>
     </div>
     <div>

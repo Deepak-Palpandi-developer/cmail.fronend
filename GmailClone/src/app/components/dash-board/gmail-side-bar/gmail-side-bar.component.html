@@ -6,10 +6,10 @@
     Compose
   </button>
 
-  <ul class="nav flex-column">
+  <ul class="nav flex-column" *ngIf="menus != []">
     <ng-container
       *ngFor="
-        let menu of menus | displayOrder : 'displayOrder' : true;
+        let menu of menus | displayOrder : 'displayOrder' : 'asc';
         let i = index
       "
     >

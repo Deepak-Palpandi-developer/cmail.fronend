@@ -10,7 +10,6 @@ import { GmailActionsComponent } from './gmail-actions/gmail-actions.component';
 import { GmailDisplayListComponent } from './gmail-display-list/gmail-display-list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GmailComposeComponent } from './gmail-compose/gmail-compose.component';
-import { AppModule } from "../../app.module";
 import { DisplayOrderPipe } from '../../pipes/display-order.pipe';
 
 @NgModule({
@@ -21,7 +20,7 @@ import { DisplayOrderPipe } from '../../pipes/display-order.pipe';
     GmailActionsComponent,
     GmailDisplayListComponent,
     GmailComposeComponent,
-    DisplayOrderPipe
+    DisplayOrderPipe,
   ],
   imports: [
     CommonModule,
@@ -29,6 +28,6 @@ import { DisplayOrderPipe } from '../../pipes/display-order.pipe';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-],
+  ],
 })
 export class DashBoardModule {}

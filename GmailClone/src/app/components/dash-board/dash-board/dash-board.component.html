@@ -34,4 +34,5 @@
 <app-gmail-compose
   *ngIf="isComposeMail"
   (closeComposeMail)="closeComposeMail()"
+  [senderMail]="userDetails?.userEmail || ''"
 ></app-gmail-compose>
