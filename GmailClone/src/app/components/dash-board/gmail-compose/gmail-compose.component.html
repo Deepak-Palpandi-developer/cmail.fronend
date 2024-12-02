@@ -82,15 +82,25 @@
     </div>
 
     <!-- Message Body -->
-    <div class="mb-3">
-      <textarea
-        class="form-control border-0"
-        rows="10"
-        placeholder="Write your message..."
-        style="resize: none"
-        formControlName="body"
-      ></textarea>
-    </div>
+    <div
+      class="form-control border-0"
+      style="
+        resize: none;
+        min-height: 150px;
+        outline: none;
+        direction: ltr;
+        text-align: left;
+      "
+      role="textbox"
+      aria-multiline="true"
+      aria-owns=":zn"
+      aria-controls=":zn"
+      aria-expanded="false"
+      contenteditable="true"
+      (input)="updateBodyContent($event)"
+      [innerHTML]="composeForm.get('body')?.value"
+      #bodyContent
+    ></div>
   </div>
 
   <!-- Footer -->
@@ -107,10 +117,15 @@
       </button>
       <button
         type="button"
-        class="btn btn-outline-secondary btn-sm"
-        (click)="attachFile()"
+        class="btn btn-outline-secondary btn-sm position-relative"
       >
-        <i class="bi bi-paperclip"></i> Attach
+        <i class="bi bi-paperclip"></i>
+        <input
+          type="file"
+          class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+          (change)="attachFile($event)"
+          accept=".pdf,.doc,.docx,.png"
+        />
       </button>
     </div>
     <div>

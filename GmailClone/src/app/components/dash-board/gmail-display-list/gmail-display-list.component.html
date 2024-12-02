@@ -17,7 +17,7 @@
           <div class="d-flex align-items-center">
             <input type="checkbox" class="form-check-input me-2" />
             <strong>To: {{ email.recipientEmail }}</strong> -
-            {{ email.subject }}
+            {{ email.subject != "" ? email.subject : "(no subject)" }}
           </div>
           <span>{{
             commonService.convertUtcToLocalTime(email.sentDate.toString())

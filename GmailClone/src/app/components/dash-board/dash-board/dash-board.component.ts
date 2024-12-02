@@ -11,6 +11,7 @@ import { selectAllFolders } from '../../../states/common/common.selectors';
 import { loadMail } from '../../../states/mails/mail.actions';
 import { selectMailByTag } from '../../../states/mails/mail.selectors';
 import { filter, take } from 'rxjs';
+import { SignalRService } from '../../../services/signal-r.service';
 
 @Component({
   selector: 'app-dash-board',
@@ -26,7 +27,8 @@ export class DashBoardComponent {
 
   constructor(
     private readonly commonService: CommonService,
-    private readonly store: Store
+    private readonly store: Store,
+    private readonly signalRService: SignalRService
   ) {}
 
   ngOnInit() {

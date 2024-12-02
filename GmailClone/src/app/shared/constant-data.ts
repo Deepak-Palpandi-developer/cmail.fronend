@@ -1,6 +1,7 @@
 export const _connections = {
   _log_in: '/user/log-in',
   _sign_up: '/user/create-user',
+  _hub_connenction: '/emailHub',
   _fetch_folders: '/folder/get-folders',
   _mail_as_sender: '/email/sender-emails',
   _mail_as_inbox: '/email/inbox-emails',
